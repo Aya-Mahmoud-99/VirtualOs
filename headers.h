@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
+#include <string.h>
 
 typedef short bool;
 #define true 1
@@ -65,3 +66,10 @@ void destroyClk(bool terminateAll)
         killpg(getpgrp(), SIGINT);
     }
 }
+
+
+//Enum of process state
+typedef enum{WAITING,RUNNING}proState;
+
+//Enum of sceduling technique
+typedef enum{HPF,STRN,RR}schedTech;
