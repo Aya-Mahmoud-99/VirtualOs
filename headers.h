@@ -69,8 +69,7 @@ void destroyClk(bool terminateAll)
 }
 
 
-//Enum of process state
-typedef enum{WAITING,RUNNING}proState;
+
 
 //Enum of sceduling technique
 typedef enum{HPF,STRN,RR}schedTech;

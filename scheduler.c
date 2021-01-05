@@ -1,15 +1,5 @@
 #include "headers.h"
 static void finishHandler(int signum);
-struct PCB{
-proState pState;
-int executionTime;
-int remainingTime;
-int waitingTime;
-int responceTime;
-int arrivalTime;
-int turnArroundTime;
-int weightedTurnArroundTime;
-};
 
 /*struct process{
 int id;

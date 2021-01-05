@@ -1,5 +1,18 @@
 #define MAX 30
 #include <stddef.h>
+//Enum of process state
+typedef enum{WAITING,RUNNING}proState;
+struct PCB{
+proState pState;
+int executionTime;
+int remainingTime;
+int waitingTime;
+int responceTime;
+int arrivalTime;
+int turnArroundTime;
+int weightedTurnArroundTime;
+};
+
 struct process{
 int id;
 int piriority;
