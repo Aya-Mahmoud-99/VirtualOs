@@ -67,7 +67,7 @@ void enqueue(pqueue *p, struct process* pr,int x)
         {
             i=p->rear;
  
-            while(x>p->piriority[i])
+            while(x<p->piriority[i])
             {
                 p->data[(i+1)%MAX]=p->data[i];
                 p->piriority[(i+1)%MAX]=p->piriority[i];
