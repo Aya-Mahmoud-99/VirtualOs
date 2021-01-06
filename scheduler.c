@@ -55,10 +55,15 @@ void hpfSchedule(){
   int key_id = ftok("keyfile", 65);
   WTAS=malloc(sizeof(float));
   int msgq_id = msgget(key_id, 0666 | IPC_CREAT);
-  while(1){
+  int rec_val;
+  while(rec_val = msgrcv(msgq_id, &received_message, sizeof(received_message.p), 0,     IPC_NOWAIT)!=-1){
+      //call enqueue inpiriority queue
+     //q.enqueue(received_message.p);
+     enqueue(q,received_message.p,received_message.p->piriority);
+    }
+  while(currentProcess=dequeue(q)){
     noProcesses++;
     WTAS=realloc(WTAS,noProcesses*sizeof(float));
-    currentProcess=dequeue(q);
     //call dequeue from piriority queue
     
     currentProcess->saved->responceTime=*timeStep-currentProcess->saved->arrivalTime;
@@ -77,7 +82,7 @@ void hpfSchedule(){
     WTAS[noProcesses-1]=currentProcess->saved->weightedTurnArroundTime;
     avgWTA=avgWTA+currentProcess->saved->weightedTurnArroundTime;
     avgWAITING=avgWAITING+currentProcess->saved->waitingTime;
-    int rec_val;
+    
     while(rec_val = msgrcv(msgq_id, &received_message, sizeof(received_message.p), 0,     IPC_NOWAIT)!=-1){
       //call enqueue inpiriority queue
      //q.enqueue(received_message.p);
