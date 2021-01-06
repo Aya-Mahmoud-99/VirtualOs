@@ -17,7 +17,7 @@ struct msgbuff
     struct process* p;
 };
 pqueue* q;
-int * timeStep;
+int  timeStep;
 struct process* currentProcess; //current running process
 FILE* fout;
 FILE* statistics;
@@ -51,7 +51,7 @@ void hpfSchedule(){
   fprintf(fout,"#At\ttime\tx\tprocess\ty\tstate\tarr\tw\ttotal\tz\tremain\ty\twait\tk");
   // get the shared varible with the clock to get the current time
   int shmid = shmget(SHKEY, 4, IPC_CREAT | 0644);
-  timeStep= (int *) shmat(shmid, (void *)0, 0);
+  
   int key_id = ftok("keyfile", 65);
   WTAS=malloc(sizeof(float));
   int msgq_id = msgget(key_id, 0666 | IPC_CREAT);
@@ -65,11 +65,11 @@ void hpfSchedule(){
     noProcesses++;
     WTAS=realloc(WTAS,noProcesses*sizeof(float));
     //call dequeue from piriority queue
-    
-    currentProcess->saved->responceTime=*timeStep-currentProcess->saved->arrivalTime;
-    currentProcess->saved->waitingTime=*timeStep-currentProcess->saved->arrivalTime;
+    timeStep= getClk();
+    currentProcess->saved->responceTime=timeStep-currentProcess->saved->arrivalTime;
+    currentProcess->saved->waitingTime=timeStep-currentProcess->saved->arrivalTime;
     currentProcess->saved->pState=RUNNING;
-    fprintf(fout,"At\ttime\t%d\tprocess\t%d\tstarted\tarr\t%d\ttotal\t%d\tremain\t%d\twait\t%d\n",*timeStep,currentProcess->id,currentProcess->saved->arrivalTime,currentProcess->saved->executionTime,currentProcess->saved->executionTime,currentProcess->saved->waitingTime);
+    fprintf(fout,"At\ttime\t%d\tprocess\t%d\tstarted\tarr\t%d\ttotal\t%d\tremain\t%d\twait\t%d\n",timeStep,currentProcess->id,currentProcess->saved->arrivalTime,currentProcess->saved->executionTime,currentProcess->saved->executionTime,currentProcess->saved->waitingTime);
     int id=fork();
     // if it is child change its code with the code of the process file and send it the remainig time parameter equals execution time
     //change process.c with the full path
@@ -77,7 +77,8 @@ void hpfSchedule(){
     //else p->id=id;
     //pause untill the process awakens it after it finishes execution
     pause();
-    currentProcess->saved->turnArroundTime=*timeStep-currentProcess->saved->arrivalTime;
+    timeStep= getClk();
+    currentProcess->saved->turnArroundTime=timeStep-currentProcess->saved->arrivalTime;
     currentProcess->saved->weightedTurnArroundTime=currentProcess->saved->turnArroundTime/currentProcess->saved->executionTime;
     WTAS[noProcesses-1]=currentProcess->saved->weightedTurnArroundTime;
     avgWTA=avgWTA+currentProcess->saved->weightedTurnArroundTime;
@@ -113,6 +114,7 @@ int main(int argc, char * argv[]){
     destroyClk(true);
 }
 void finishHandler(int signum){
-    fprintf(fout,"At\ttime\t%d\tprocess\t%d\tfinished\tarr\t%d\ttotal\t%d\tremain\t%d\twait\t%d\tTA\t%d\tWTA\t%d\n",*timeStep,currentProcess->id,currentProcess->saved->arrivalTime,currentProcess->saved->executionTime,currentProcess->saved->executionTime,currentProcess->saved->waitingTime,currentProcess->saved->turnArroundTime,currentProcess->saved->weightedTurnArroundTime);
+  timeStep=getClk();
+    fprintf(fout,"At\ttime\t%d\tprocess\t%d\tfinished\tarr\t%d\ttotal\t%d\tremain\t%d\twait\t%d\tTA\t%d\tWTA\t%d\n",timeStep,currentProcess->id,currentProcess->saved->arrivalTime,currentProcess->saved->executionTime,currentProcess->saved->executionTime,currentProcess->saved->waitingTime,currentProcess->saved->turnArroundTime,currentProcess->saved->weightedTurnArroundTime);
   //clean process resources
 }
