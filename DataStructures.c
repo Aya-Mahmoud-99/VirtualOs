@@ -29,6 +29,19 @@ int empty(pqueue *p);
 int full(pqueue *p);
 void enqueue(pqueue *p, struct process* pr,int x);
 struct process* dequeue(pqueue *p);
+int peek(pqueue *p);
+
+
+int peek(pqueue *p)
+{
+    
+    if (empty(p))
+    {
+        //cout << "UnderFlow\nProgram Terminated\n";
+        exit(EXIT_FAILURE);
+    }
+    return p->data[p->front]->saved->arrivalTime;
+}
 void initialize(pqueue *p)
 {
     p->rear=-1;
@@ -107,4 +120,5 @@ struct process* dequeue(pqueue *p)
  
     return(x);
 }
+
  
